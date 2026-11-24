@@ -118,20 +118,30 @@ form.addEventListener('submit', async (e) => {
     if (response.ok && String(result.success) === 'true') {
       form.reset();
       showStatus("Thanks! Your message has been sent. I'll get back to you soon.", 'success');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = submitLabel;
     } else {
-      // Show FormSubmit's own reason (for example, "This form needs Activation")
       console.warn('FormSubmit reply:', result);
-      const reason = result.message ? ' (' + result.message + ')' : '';
-      showStatus("Sorry, your message couldn't be sent" + reason + '. Please email or WhatsApp me instead.', 'fail');
+      sendTheNormalWay();
     }
   } catch (err) {
-    console.warn('Contact form error:', err);
-    showStatus('Sorry, there was a connection problem. Please email or WhatsApp me instead.', 'fail');
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = submitLabel;
+    // The background send was blocked or failed, so use the normal way instead
+    console.warn('Background send failed, using normal form submit:', err);
+    sendTheNormalWay();
   }
 });
+
+// Normal form submit: the visitor goes to FormSubmit's page, then comes back here
+function sendTheNormalWay() {
+  showStatus('Sending you to a quick confirmation page...', '');
+  HTMLFormElement.prototype.submit.call(form);
+}
+
+// Show a thank-you message when FormSubmit sends the visitor back (?sent=1)
+if (new URLSearchParams(window.location.search).get('sent') === '1') {
+  showStatus("Thanks! Your message has been sent. I'll get back to you soon.", 'success');
+  history.replaceState(null, '', window.location.pathname + '#contact');
+}
 
 // Clear the red border once the visitor starts typing
 form.querySelectorAll('input, textarea').forEach((input) => {
