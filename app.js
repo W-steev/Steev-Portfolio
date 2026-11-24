@@ -119,10 +119,14 @@ form.addEventListener('submit', async (e) => {
       form.reset();
       showStatus("Thanks! Your message has been sent. I'll get back to you soon.", 'success');
     } else {
-      throw new Error(result.message || 'Failed');
+      // Show FormSubmit's own reason (for example, "This form needs Activation")
+      console.warn('FormSubmit reply:', result);
+      const reason = result.message ? ' (' + result.message + ')' : '';
+      showStatus("Sorry, your message couldn't be sent" + reason + '. Please email or WhatsApp me instead.', 'fail');
     }
   } catch (err) {
-    showStatus('Sorry, something went wrong. Please email or WhatsApp me instead.', 'fail');
+    console.warn('Contact form error:', err);
+    showStatus('Sorry, there was a connection problem. Please email or WhatsApp me instead.', 'fail');
   } finally {
     submitBtn.disabled = false;
     submitBtn.innerHTML = submitLabel;
