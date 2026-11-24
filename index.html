@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steev Waithaka | Web Developer in Nyahururu, Kenya</title>
+  <meta name="description" content="Steev (Stephen) Waithaka is a web developer in Nyahururu, Kenya. He builds modern websites, online shops with M-Pesa payments and ESP32 automation projects.">
+  <meta name="theme-color" content="#0a0a0f">
+
+  <!-- Social sharing preview (WhatsApp, Facebook, LinkedIn) -->
+  <meta property="og:title" content="Steev Waithaka | Full-Stack Web Developer">
+  <meta property="og:description" content="Modern websites and online shops for Kenyan businesses, with M-Pesa payments built in.">
+  <meta property="og:image" content="Images/hero-photo.jpg">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" type="image/png" href="Images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/caffe36664.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="#hero" class="nav-logo" aria-label="Steev, back to top">
+        <img src="Images/logo-steev.png" alt="Steev logo" width="120" height="34">
+      </a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#hero" class="nav-link active">Home</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#services" class="nav-link">Services</a></li>
+        <li><a href="#portfolio" class="nav-link">Work</a></li>
+        <li><a href="#contact" class="nav-link nav-cta">Hire me</a></li>
+      </ul>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ========== HERO ========== -->
+    <section id="hero" class="hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="container hero-grid">
+        <div class="hero-text reveal">
+          <span class="badge"><span class="dot"></span> Available for new projects</span>
+          <h1>Hi, I'm <span class="gradient-text">Steev Waithaka</span>.<br>I build websites that sell.</h1>
+          <p class="hero-sub">
+            I'm a web developer based in Nyahururu, Kenya. I build fast, modern websites
+            and online shops with M-Pesa payments, and I automate DIY projects with ESP32 and sensors.
+          </p>
+          <div class="hero-actions">
+            <a href="#portfolio" class="btn btn-primary">See my work <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="#contact" class="btn btn-ghost">Let's talk</a>
+          </div>
+          <ul class="hero-tech" aria-label="Technologies I use">
+            <li>Next.js</li><li>React</li><li>JavaScript</li><li>Supabase</li><li>M-Pesa Daraja</li><li>ESP32</li>
+          </ul>
+        </div>
+
+        <div class="hero-photo reveal">
+          <div class="photo-frame">
+            <img src="Images/hero-photo.jpg" alt="Steev Waithaka smiling" width="662" height="1000">
+          </div>
+          <div class="floating-card">
+            <i class="fa-solid fa-trophy"></i>
+            <div>
+              <strong>KSEF 2026 Nationals</strong>
+              <span>Lemark Smart Drainage System</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ABOUT ========== -->
+    <section id="about" class="section">
+      <div class="container about-grid">
+        <div class="about-photo reveal">
+          <img src="Images/about-photo.jpg" alt="Steev Waithaka in a white shirt and tie" loading="lazy" width="600" height="900">
+        </div>
+
+        <div class="about-text reveal">
+          <p class="eyebrow">About me</p>
+          <h2 class="section-title">I turn ideas into working websites</h2>
+          <p>
+            I'm Stephen Waithaka, but everyone calls me Steev. I'm a web developer in
+            Nyahururu with a background in science education from Mount Kenya University.
+            I love building things people can actually use, from business websites to
+            full online shops with carts, customer accounts, order tracking and M-Pesa checkout.
+          </p>
+          <p>
+            I also build hardware. My Lemark Smart Drainage System, made with an ESP32 and
+            several sensors, reached the national level of the Kenya Science and Engineering Fair (KSEF) in 2026.
+            If you want to automate a DIY project, I'm your plug.
+          </p>
+
+          <div class="tabs" role="tablist">
+            <button class="tab active" role="tab" data-tab="skills" aria-selected="true">Skills</button>
+            <button class="tab" role="tab" data-tab="education" aria-selected="false">Education</button>
+            <button class="tab" role="tab" data-tab="journey" aria-selected="false">Journey</button>
+          </div>
+
+          <div class="tab-panel active" id="skills" role="tabpanel">
+            <ul class="info-list">
+              <li><span>Front-end</span>HTML, CSS/SCSS, JavaScript, React and Next.js</li>
+              <li><span>Back-end and databases</span>Supabase (PostgreSQL), user accounts, APIs</li>
+              <li><span>Payments</span>M-Pesa STK Push with the Safaricom Daraja API</li>
+              <li><span>Automation and IoT</span>ESP32, sensors and Arduino</li>
+              <li><span>Tools</span>VS Code, Git and GitHub, Vercel</li>
+            </ul>
+          </div>
+
+          <div class="tab-panel" id="education" role="tabpanel">
+            <ul class="info-list">
+              <li><span>Mount Kenya University</span>Education (Science)</li>
+              <li><span>freeCodeCamp, November 2025</span>Responsive Web Design certification (Legacy V8), about 300 hours of work.
+                <a href="https://freecodecamp.org/certification/waithakasteev/responsive-web-design" target="_blank" rel="noopener" class="link small-link">View certificate <i class="fa-solid fa-arrow-up-right-from-square"></i></a></li>
+            </ul>
+          </div>
+
+          <div class="tab-panel" id="journey" role="tabpanel">
+            <ul class="info-list">
+              <li><span>November 2025</span>Earned the freeCodeCamp Responsive Web Design certification</li>
+              <li><span>2026</span>Took the Lemark Smart Drainage System to the KSEF national level</li>
+              <li><span>2026</span>Built and launched Winn, a jewelry and perfume online shop</li>
+              <li><span>Now</span>Taking on websites and automation projects</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SERVICES ========== -->
+    <section id="services" class="section section-alt">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Services</p>
+          <h2 class="section-title">How I can help your business</h2>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card reveal">
+            <div class="service-icon"><i class="fa-solid fa-laptop-code"></i></div>
+            <h3>Business websites</h3>
+            <p>A clean, fast website that shows customers who you are, what you offer and how to reach you. Works well on phones.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+            <h3>Online shops with M-Pesa</h3>
+            <p>Sell online with product pages, a cart, customer accounts, order tracking and M-Pesa payments.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon"><i class="fa-solid fa-microchip"></i></div>
+            <h3>Automation and DIY projects</h3>
+            <p>Smart projects built with ESP32, Arduino and sensors, for school science fairs, homes and small businesses.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon"><i class="fa-solid fa-rocket"></i></div>
+            <h3>Launch and support</h3>
+            <p>I set up hosting and your domain, put the site live and help with updates after launch. I can also make your site installable as an Android app.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PORTFOLIO ========== -->
+    <section id="portfolio" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">My work</p>
+          <h2 class="section-title">Recent projects</h2>
+        </div>
+
+        <div class="projects-grid">
+          <article class="project-card reveal">
+            <div class="project-img">
+              <img src="Images/winn.jpg" alt="Winn online shop homepage" loading="lazy" width="1000" height="732" class="img-top">
+            </div>
+            <div class="project-body">
+              <h3>Winn: jewelry and perfume shop</h3>
+              <p>A full online store for a Kenyan business with branches in Nairobi, Nakuru, Othaya and Nyahururu. It has a product catalogue, cart, customer accounts, order tracking, an admin area and M-Pesa checkout. Customers can also install it as an app.</p>
+              <ul class="tags">
+                <li>Next.js</li><li>Supabase</li><li>M-Pesa Daraja</li><li>Vercel</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://winn-six.vercel.app/" class="link" target="_blank" rel="noopener">Visit live site <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-img">
+              <img src="Images/lemark.jpg" alt="Lemark Smart Drainage System model with sensors, a phone and a laptop" loading="lazy" width="960" height="580">
+            </div>
+            <div class="project-body">
+              <h3>Lemark Smart Drainage System</h3>
+              <p>A smart drainage system built with an ESP32 microcontroller and a range of sensors. It reached the national level of the Kenya Science and Engineering Fair (KSEF) in 2026.</p>
+              <ul class="tags">
+                <li>ESP32</li><li>Sensors</li><li>IoT</li><li>KSEF 2026</li>
+              </ul>
+              <div class="project-links">
+                <a href="#contact" class="link">Ask me about automation <i class="fa-solid fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-img">
+              <img src="Images/portfolio.jpg" alt="Steev portfolio website homepage" loading="lazy" width="1000" height="732" class="img-top">
+            </div>
+            <div class="project-body">
+              <h3>Personal portfolio</h3>
+              <p>The site you're on now. It's a fast, responsive portfolio written by hand in HTML, SCSS and JavaScript, with scroll animations and a working contact form.</p>
+              <ul class="tags">
+                <li>HTML</li><li>SCSS</li><li>JavaScript</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/W-steev" class="link" target="_blank" rel="noopener">See my code on GitHub <i class="fa-brands fa-github"></i></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card project-cta reveal">
+            <div class="cta-inner">
+              <i class="fa-solid fa-lightbulb"></i>
+              <h3>Your project could be next</h3>
+              <p>Need a website, an online shop or an automation project? Tell me about it and I'll reply within a day.</p>
+              <a href="#contact" class="btn btn-primary">Start a project</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTACT ========== -->
+    <section id="contact" class="section section-alt">
+      <div class="container contact-grid">
+        <div class="contact-info reveal">
+          <p class="eyebrow">Contact</p>
+          <h2 class="section-title">Let's build something together</h2>
+          <p>Send a message or reach me directly. I usually reply the same day.</p>
+
+          <ul class="contact-list">
+            <li>
+              <a href="mailto:waithaka100steev@gmail.com">
+                <i class="fa-solid fa-envelope"></i>
+                <span><small>Email</small>waithaka100steev@gmail.com</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/254707916818" target="_blank" rel="noopener">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span><small>WhatsApp</small>0707 916 818</span>
+              </a>
+            </li>
+            <li>
+              <a href="tel:+254707916818">
+                <i class="fa-solid fa-phone"></i>
+                <span><small>Call</small>+254 707 916 818</span>
+              </a>
+            </li>
+            <li>
+              <div class="contact-static">
+                <i class="fa-solid fa-location-dot"></i>
+                <span><small>Location</small>Nyahururu, Kenya</span>
+              </div>
+            </li>
+          </ul>
+
+          <div class="socials">
+            <a href="https://github.com/W-steev" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/stephen-waithaka-83674634a" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="Images/steev-waithaka-cv.pdf" download class="btn btn-ghost cv-btn"><i class="fa-solid fa-download"></i> Download CV</a>
+          </div>
+        </div>
+
+        <form class="contact-form reveal" id="contact-form" action="https://formsubmit.co/waithaka100steev@gmail.com" method="POST" novalidate>
+          <input type="hidden" name="_subject" value="New message from your portfolio website">
+          <input type="hidden" name="_template" value="table">
+          <input type="text" name="_honey" class="honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <div class="field">
+            <label for="name">Your name</label>
+            <input type="text" id="name" name="name" placeholder="Jane Wanjiku" required>
+          </div>
+          <div class="field">
+            <label for="email">Your email</label>
+            <input type="email" id="email" name="email" placeholder="jane@example.com" required>
+          </div>
+          <div class="field">
+            <label for="message">Your message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="submit-btn">
+            Send message <i class="fa-solid fa-paper-plane"></i>
+          </button>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>&copy; <span id="year"></span> Steev Waithaka. Made with <i class="fa-solid fa-heart"></i> in Nyahururu, Kenya.</p>
+      <a href="#hero" class="back-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
