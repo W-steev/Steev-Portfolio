@@ -74,7 +74,7 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
 
-// ---------- Contact form (sends to your email via FormSubmit) ----------
+// ---------- Contact form (sends to your email via Web3Forms) ----------
 const form = document.getElementById('contact-form');
 const statusText = document.getElementById('form-status');
 const submitBtn = document.getElementById('submit-btn');
@@ -107,11 +107,12 @@ form.addEventListener('submit', async (e) => {
   showStatus('', '');
 
   try {
-    const ajaxUrl = form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
-    const response = await fetch(ajaxUrl, {
+    const data = Object.fromEntries(new FormData(form));
+    delete data.redirect; // only needed for the normal (no-JavaScript) way
+    const response = await fetch(form.action, {
       method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: new FormData(form),
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(data),
     });
     const result = await response.json();
 
@@ -121,8 +122,12 @@ form.addEventListener('submit', async (e) => {
       submitBtn.disabled = false;
       submitBtn.innerHTML = submitLabel;
     } else {
-      console.warn('FormSubmit reply:', result);
-      sendTheNormalWay();
+      // Web3Forms answered but refused the message: show its reason
+      console.warn('Web3Forms reply:', result);
+      const reason = result.message ? ' (' + result.message + ')' : '';
+      showStatus("Sorry, your message couldn't be sent" + reason + '. Please email or WhatsApp me instead.', 'fail');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = submitLabel;
     }
   } catch (err) {
     // The background send was blocked or failed, so use the normal way instead
@@ -131,13 +136,13 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-// Normal form submit: the visitor goes to FormSubmit's page, then comes back here
+// Normal form submit: the visitor goes to Web3Forms, then comes back here
 function sendTheNormalWay() {
   showStatus('Sending you to a quick confirmation page...', '');
   HTMLFormElement.prototype.submit.call(form);
 }
 
-// Show a thank-you message when FormSubmit sends the visitor back (?sent=1)
+// Show a thank-you message when Web3Forms sends the visitor back (?sent=1)
 if (new URLSearchParams(window.location.search).get('sent') === '1') {
   showStatus("Thanks! Your message has been sent. I'll get back to you soon.", 'success');
   history.replaceState(null, '', window.location.pathname + '#contact');
