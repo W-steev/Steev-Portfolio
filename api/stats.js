@@ -82,7 +82,19 @@ module.exports = async (req, res) => {
       query({ ...range, by: 'deviceType', limit: '5' }),
     ]);
 
-    const total = totals[0] || { visitors: 0, pageviews: 0 };
+    // Totals: use the one-row answer if Vercel gives it, otherwise add up the days
+    const sum = (rows, key) => rows.reduce((n, r) => n + (Number(r[key]) || 0), 0);
+    const totalRow = totals[0] || {};
+    const total = {
+      visitors: Number(totalRow.visitors) || sum(daily, 'visitors'),
+      pageviews: Number(totalRow.pageviews) || sum(daily, 'pageviews'),
+      fromDays: !Number(totalRow.visitors),
+    };
+
+    // Debug mode: show exactly what Vercel sent (numbers only, no secrets)
+    if (req.query.debug === '1') {
+      return res.status(200).json({ debug: true, range, totals, daily, pages, referrers, countries, devices });
+    }
 
     return res.status(200).json({
       days,
@@ -90,6 +102,7 @@ module.exports = async (req, res) => {
       until: range.until,
       visitors: total.visitors || 0,
       pageviews: total.pageviews || 0,
+      totalsFromDays: total.fromDays,
       daily: daily.map((d) => ({ date: d.timestamp, visitors: d.visitors || 0, pageviews: d.pageviews || 0 })),
       pages: pages.map((r) => ({ label: r.requestPath, visitors: r.visitors || 0 })),
       referrers: referrers.map((r) => ({ label: r.referrerHostname, visitors: r.visitors || 0 })),

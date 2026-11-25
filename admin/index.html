@@ -109,6 +109,12 @@
       color: #fca5a5; padding: 14px 16px; border-radius: 12px; margin-bottom: 16px; font-size: 14px;
     }
     .foot { margin-top: 22px; color: var(--muted); font-size: 12px; text-align: center; }
+    .debug { margin-top: 22px; text-align: center; }
+    .debug pre {
+      margin-top: 12px; text-align: left; background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px; font-size: 12px; overflow: auto; max-height: 420px;
+      white-space: pre-wrap; word-break: break-word;
+    }
     .hidden { display: none !important; }
     @media (max-width: 600px) {
       .big { font-size: 32px; }
@@ -192,6 +198,11 @@
         <h2>Pages</h2>
         <ul class="list" id="pages"></ul>
       </div>
+    </div>
+
+    <div class="debug">
+      <button class="chip" id="debug-btn" type="button">Show raw data</button>
+      <pre id="debug-out" class="hidden"></pre>
     </div>
 
     <p class="foot" id="foot">Data from Vercel Web Analytics. The free plan keeps the last 30 days.</p>
@@ -369,6 +380,20 @@
       if (ok) { try { sessionStorage.setItem('adminPass', password); } catch (e2) {} }
       loginBtn.disabled = false;
       loginBtn.textContent = 'Open dashboard';
+    });
+
+    document.getElementById('debug-btn').addEventListener('click', async () => {
+      const out = document.getElementById('debug-out');
+      out.classList.remove('hidden');
+      out.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/stats?debug=1&days=' + rangeSelect.value, {
+          headers: { 'x-admin-password': password }, cache: 'no-store',
+        });
+        out.textContent = JSON.stringify(await res.json(), null, 2);
+      } catch (e) {
+        out.textContent = 'Could not load raw data.';
+      }
     });
 
     rangeSelect.addEventListener('change', load);
