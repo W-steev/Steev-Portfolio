@@ -94,10 +94,6 @@ module.exports = async (req, res) => {
       fromDays: !Number(totalRow.visitors),
     };
 
-    // Debug mode: show exactly what Vercel sent (numbers only, no secrets)
-    if (req.query.debug === '1') {
-      return res.status(200).json({ debug: true, range, totals, daily, pages, referrers, countries, devices });
-    }
 
     return res.status(200).json({
       days,

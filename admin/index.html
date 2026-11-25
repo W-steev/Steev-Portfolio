@@ -103,18 +103,13 @@
     }
     .list li > span { position: relative; z-index: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .list li > b { position: relative; z-index: 1; font-weight: 600; }
+    .flag { display: inline-block; vertical-align: -2px; margin-right: 8px; border-radius: 2px; }
     .empty { color: var(--muted); font-size: 14px; padding: 8px 2px; }
     .notice {
       background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.35);
       color: #fca5a5; padding: 14px 16px; border-radius: 12px; margin-bottom: 16px; font-size: 14px;
     }
     .foot { margin-top: 22px; color: var(--muted); font-size: 12px; text-align: center; }
-    .debug { margin-top: 22px; text-align: center; }
-    .debug pre {
-      margin-top: 12px; text-align: left; background: var(--card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 14px; font-size: 12px; overflow: auto; max-height: 420px;
-      white-space: pre-wrap; word-break: break-word;
-    }
     .hidden { display: none !important; }
     @media (max-width: 600px) {
       .big { font-size: 32px; }
@@ -200,11 +195,6 @@
       </div>
     </div>
 
-    <div class="debug">
-      <button class="chip" id="debug-btn" type="button">Show raw data</button>
-      <pre id="debug-out" class="hidden"></pre>
-    </div>
-
     <p class="foot" id="foot">Data from Vercel Web Analytics. The free plan keeps the last 30 days.</p>
   </main>
 
@@ -224,16 +214,20 @@
       try { return new Intl.DisplayNames(['en'], { type: 'region' }); } catch (e) { return null; }
     })();
 
-    function flag(code) {
-      if (!code || code.length !== 2) return '';
-      return String.fromCodePoint(...code.toUpperCase().split('').map((c) => 127397 + c.charCodeAt(0)));
+    function countryName(code) {
+      if (!code) return 'Others';
+      try { return (countryNames && countryNames.of(code)) || code; } catch (e) { return code; }
     }
 
-    function countryLabel(code) {
-      if (!code) return 'Others';
-      let name = code;
-      try { name = (countryNames && countryNames.of(code)) || code; } catch (e) {}
-      return flag(code) + ' ' + name;
+    // Small flag picture (works on Windows, which can't show flag emojis)
+    function countryIcon(code) {
+      if (!code || !/^[A-Za-z]{2}$/.test(code)) return null;
+      const img = document.createElement('img');
+      img.src = 'https://flagcdn.com/20x15/' + code.toLowerCase() + '.png';
+      img.width = 20; img.height = 15; img.alt = '';
+      img.className = 'flag';
+      img.onerror = () => img.remove();
+      return img;
     }
 
     function referrerLabel(host) {
@@ -246,7 +240,7 @@
       return names[String(d).toLowerCase()] || (d || 'Others');
     }
 
-    function renderList(id, rows, labelFn) {
+    function renderList(id, rows, labelFn, iconFn) {
       const el = document.getElementById(id);
       el.innerHTML = '';
       if (!rows || !rows.length) {
@@ -260,7 +254,9 @@
         fill.className = 'fill';
         fill.style.width = Math.max(4, (r.visitors / max) * 100) + '%';
         const name = document.createElement('span');
-        name.textContent = labelFn(r.label);
+        const icon = iconFn ? iconFn(r.label) : null;
+        if (icon) name.appendChild(icon);
+        name.appendChild(document.createTextNode(labelFn(r.label)));
         const count = document.createElement('b');
         count.textContent = r.visitors;
         li.append(fill, name, count);
@@ -346,7 +342,7 @@
         document.getElementById('pageviews').textContent = data.pageviews;
         renderChart(data);
         renderList('referrers', data.referrers, referrerLabel);
-        renderList('countries', data.countries, countryLabel);
+        renderList('countries', data.countries, countryName, countryIcon);
         renderList('devices', data.devices, deviceLabel);
         renderList('pages', data.pages, (p) => (p === '/' ? 'Home page' : p || 'Others'));
         document.getElementById('foot').textContent =
@@ -380,20 +376,6 @@
       if (ok) { try { sessionStorage.setItem('adminPass', password); } catch (e2) {} }
       loginBtn.disabled = false;
       loginBtn.textContent = 'Open dashboard';
-    });
-
-    document.getElementById('debug-btn').addEventListener('click', async () => {
-      const out = document.getElementById('debug-out');
-      out.classList.remove('hidden');
-      out.textContent = 'Loading...';
-      try {
-        const res = await fetch('/api/stats?debug=1&days=' + rangeSelect.value, {
-          headers: { 'x-admin-password': password }, cache: 'no-store',
-        });
-        out.textContent = JSON.stringify(await res.json(), null, 2);
-      } catch (e) {
-        out.textContent = 'Could not load raw data.';
-      }
     });
 
     rangeSelect.addEventListener('change', load);
