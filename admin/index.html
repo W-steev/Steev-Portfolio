@@ -3,10 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin | Visitor Stats</title>
+  <title>Steev Admin</title>
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0a0a0f">
-  <link rel="icon" type="image/png" href="/Images/favicon.png">
+  <link rel="icon" type="image/png" href="/admin/icons/icon-192.png">
+
+  <!-- Installable app (phone home screen) -->
+  <link rel="manifest" href="/admin/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/admin/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Steev Admin">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="application-name" content="Steev Admin">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -55,6 +64,9 @@
     }
     .btn:disabled { opacity: 0.6; cursor: wait; }
     .msg { margin-top: 14px; font-size: 14px; min-height: 20px; color: #ef4444; }
+    .install-login { display: block; width: 100%; margin: 4px 0 10px; }
+    @media (display-mode: standalone) { .install-btn { display: none !important; } }
+    body { padding-top: env(safe-area-inset-top); }
     .link-btn {
       background: none; border: none; color: var(--muted); font-size: 14px; cursor: pointer;
       text-decoration: underline; text-underline-offset: 3px; margin-top: 4px;
@@ -147,6 +159,7 @@
       <input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
       <button class="btn" id="login-btn" type="submit">Open dashboard</button>
       <p class="msg" id="login-msg" role="alert"></p>
+      <button type="button" class="chip install-btn install-login hidden">⬇ Install Steev Admin app</button>
       <button type="button" class="link-btn" id="forgot-btn" aria-expanded="false" aria-controls="forgot">Forgot password?</button>
 
       <div class="forgot hidden" id="forgot">
@@ -178,6 +191,7 @@
           <option value="14">Last 14 days</option>
           <option value="30">Last 30 days</option>
         </select>
+        <button class="chip install-btn hidden" type="button">⬇ Install app</button>
         <button class="chip" id="refresh" type="button">↻ Refresh</button>
         <button class="chip" id="logout" type="button">Log out</button>
       </div>
@@ -231,6 +245,9 @@
   </main>
 
   <script>
+    // The app lives at /admin/ (with the slash) so it can be installed
+    if (location.pathname === '/admin') location.replace('/admin/' + location.search + location.hash);
+
     const loginBox = document.getElementById('login');
     const dash = document.getElementById('dash');
     const loginForm = document.getElementById('login-form');
@@ -416,6 +433,26 @@
       e.currentTarget.setAttribute('aria-expanded', open);
       e.currentTarget.textContent = open ? 'Hide reset steps' : 'Forgot password?';
     });
+
+    // ----- Install as an app -----
+    let installPrompt = null;
+    const installButtons = document.querySelectorAll('.install-btn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      installPrompt = e;
+      installButtons.forEach((b) => b.classList.remove('hidden'));
+    });
+    installButtons.forEach((b) => b.addEventListener('click', async () => {
+      if (!installPrompt) return;
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+      installPrompt = null;
+      installButtons.forEach((x) => x.classList.add('hidden'));
+    }));
+    window.addEventListener('appinstalled', () => installButtons.forEach((x) => x.classList.add('hidden')));
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' }).catch(() => {}));
+    }
 
     rangeSelect.addEventListener('change', load);
     document.getElementById('refresh').addEventListener('click', load);
