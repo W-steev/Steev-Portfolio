@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Visitor Stats</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0a0a0f">
+  <link rel="icon" type="image/png" href="/Images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --card: #16161f;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f4f4f6;
+      --muted: #a1a1b0;
+      --accent: #ff004f;
+      --gradient: linear-gradient(135deg, #ff004f 0%, #ff6a3d 100%);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    h1, h2, .big { font-family: "Space Grotesk", "Inter", sans-serif; letter-spacing: -0.02em; }
+    button, select, input { font: inherit; color: inherit; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 60px; }
+
+    /* Login */
+    .login {
+      min-height: 100vh; display: grid; place-items: center; padding: 20px;
+    }
+    .login-card {
+      width: 100%; max-width: 380px; padding: 34px 28px;
+      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+      text-align: center;
+    }
+    .login-card img { height: 34px; margin: 0 auto 20px; }
+    .login-card h1 { font-size: 24px; margin-bottom: 6px; }
+    .login-card p { color: var(--muted); font-size: 14px; margin-bottom: 22px; }
+    .login-card input {
+      width: 100%; padding: 13px 16px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--bg); margin-bottom: 14px;
+    }
+    .login-card input:focus { outline: none; border-color: var(--accent); }
+    .btn {
+      width: 100%; padding: 13px; border: none; border-radius: 999px; cursor: pointer;
+      background: var(--gradient); color: #fff; font-weight: 600;
+    }
+    .btn:disabled { opacity: 0.6; cursor: wait; }
+    .msg { margin-top: 14px; font-size: 14px; min-height: 20px; color: #ef4444; }
+
+    /* Dashboard */
+    .top {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      flex-wrap: wrap; margin-bottom: 26px;
+    }
+    .top-left { display: flex; align-items: center; gap: 14px; }
+    .top-left img { height: 30px; }
+    .top h1 { font-size: 22px; }
+    .top-right { display: flex; gap: 10px; align-items: center; }
+    .chip {
+      padding: 9px 14px; border-radius: 999px; background: var(--card);
+      border: 1px solid var(--border); cursor: pointer; font-size: 14px;
+    }
+    .chip:hover { border-color: var(--accent); }
+    select.chip { padding-right: 30px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 22px;
+    }
+    .label { color: var(--muted); font-size: 13px; font-weight: 500; }
+    .big { font-size: 40px; font-weight: 700; margin-top: 4px; }
+    .sub { color: var(--muted); font-size: 13px; }
+    .card h2 { font-size: 16px; margin-bottom: 14px; }
+
+    .chart { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding-top: 10px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; min-width: 0; }
+    .bar {
+      width: 100%; max-width: 38px; border-radius: 6px 6px 2px 2px;
+      background: var(--gradient); min-height: 3px; position: relative;
+    }
+    .bar span {
+      position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; color: var(--text); white-space: nowrap;
+    }
+    .bar.zero { background: rgba(255, 255, 255, 0.08); }
+    .bar-day { font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+    .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px; }
+    .list li {
+      list-style: none; position: relative; display: flex; justify-content: space-between; gap: 10px;
+      padding: 9px 12px; margin-bottom: 6px; border-radius: 8px; overflow: hidden; font-size: 14px;
+    }
+    .list li .fill {
+      position: absolute; inset: 0 auto 0 0; background: rgba(255, 0, 79, 0.14); border-radius: 8px; z-index: 0;
+    }
+    .list li > span { position: relative; z-index: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .list li > b { position: relative; z-index: 1; font-weight: 600; }
+    .empty { color: var(--muted); font-size: 14px; padding: 8px 2px; }
+    .notice {
+      background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5; padding: 14px 16px; border-radius: 12px; margin-bottom: 16px; font-size: 14px;
+    }
+    .foot { margin-top: 22px; color: var(--muted); font-size: 12px; text-align: center; }
+    .hidden { display: none !important; }
+    @media (max-width: 600px) {
+      .big { font-size: 32px; }
+      .bar-day { font-size: 10px; }
+      .chart { gap: 3px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Login ===== -->
+  <section class="login" id="login">
+    <form class="login-card" id="login-form">
+      <img src="/Images/logo-steev.png" alt="Steev">
+      <h1>Admin</h1>
+      <p>Enter your password to see your visitor stats.</p>
+      <input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
+      <button class="btn" id="login-btn" type="submit">Open dashboard</button>
+      <p class="msg" id="login-msg" role="alert"></p>
+    </form>
+  </section>
+
+  <!-- ===== Dashboard ===== -->
+  <main class="wrap hidden" id="dash">
+    <div class="top">
+      <div class="top-left">
+        <img src="/Images/logo-steev.png" alt="Steev">
+        <h1>Visitor stats</h1>
+      </div>
+      <div class="top-right">
+        <select class="chip" id="range" aria-label="Time period">
+          <option value="1">Today</option>
+          <option value="7" selected>Last 7 days</option>
+          <option value="14">Last 14 days</option>
+          <option value="30">Last 30 days</option>
+        </select>
+        <button class="chip" id="refresh" type="button">↻ Refresh</button>
+        <button class="chip" id="logout" type="button">Log out</button>
+      </div>
+    </div>
+
+    <div class="notice hidden" id="notice"></div>
+
+    <div class="stats">
+      <div class="card">
+        <div class="label">Visitors</div>
+        <div class="big" id="visitors">–</div>
+        <div class="sub">different people</div>
+      </div>
+      <div class="card">
+        <div class="label">Page views</div>
+        <div class="big" id="pageviews">–</div>
+        <div class="sub">times your site was opened</div>
+      </div>
+      <div class="card">
+        <div class="label">Busiest day</div>
+        <div class="big" id="best-day">–</div>
+        <div class="sub" id="best-day-sub">&nbsp;</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Visitors per day</h2>
+      <div class="chart" id="chart"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>Where visitors came from</h2>
+        <ul class="list" id="referrers"></ul>
+      </div>
+      <div class="card">
+        <h2>Countries</h2>
+        <ul class="list" id="countries"></ul>
+      </div>
+      <div class="card">
+        <h2>Devices</h2>
+        <ul class="list" id="devices"></ul>
+      </div>
+      <div class="card">
+        <h2>Pages</h2>
+        <ul class="list" id="pages"></ul>
+      </div>
+    </div>
+
+    <p class="foot" id="foot">Data from Vercel Web Analytics. The free plan keeps the last 30 days.</p>
+  </main>
+
+  <script>
+    const loginBox = document.getElementById('login');
+    const dash = document.getElementById('dash');
+    const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+    const loginMsg = document.getElementById('login-msg');
+    const notice = document.getElementById('notice');
+    const rangeSelect = document.getElementById('range');
+
+    let password = '';
+    try { password = sessionStorage.getItem('adminPass') || ''; } catch (e) {}
+
+    const countryNames = (() => {
+      try { return new Intl.DisplayNames(['en'], { type: 'region' }); } catch (e) { return null; }
+    })();
+
+    function flag(code) {
+      if (!code || code.length !== 2) return '';
+      return String.fromCodePoint(...code.toUpperCase().split('').map((c) => 127397 + c.charCodeAt(0)));
+    }
+
+    function countryLabel(code) {
+      if (!code) return 'Others';
+      let name = code;
+      try { name = (countryNames && countryNames.of(code)) || code; } catch (e) {}
+      return flag(code) + ' ' + name;
+    }
+
+    function referrerLabel(host) {
+      if (host === '' || host === null || host === undefined) return 'Direct (typed or shared link)';
+      return host;
+    }
+
+    function deviceLabel(d) {
+      const names = { desktop: '💻 Computer', mobile: '📱 Phone', tablet: '📟 Tablet' };
+      return names[String(d).toLowerCase()] || (d || 'Others');
+    }
+
+    function renderList(id, rows, labelFn) {
+      const el = document.getElementById(id);
+      el.innerHTML = '';
+      if (!rows || !rows.length) {
+        el.innerHTML = '<li class="empty">No visitors yet</li>';
+        return;
+      }
+      const max = Math.max(...rows.map((r) => r.visitors), 1);
+      rows.forEach((r) => {
+        const li = document.createElement('li');
+        const fill = document.createElement('div');
+        fill.className = 'fill';
+        fill.style.width = Math.max(4, (r.visitors / max) * 100) + '%';
+        const name = document.createElement('span');
+        name.textContent = labelFn(r.label);
+        const count = document.createElement('b');
+        count.textContent = r.visitors;
+        li.append(fill, name, count);
+        el.appendChild(li);
+      });
+    }
+
+    function renderChart(data) {
+      const chart = document.getElementById('chart');
+      chart.innerHTML = '';
+
+      // Make one slot for every day, including days with no visitors
+      const byDay = {};
+      data.daily.forEach((d) => { byDay[d.date.slice(0, 10)] = d.visitors; });
+      const days = [];
+      const start = new Date(data.since + 'T00:00:00Z');
+      for (let i = 0; i < data.days; i++) {
+        const d = new Date(start.getTime() + i * 86400000);
+        const key = d.toISOString().slice(0, 10);
+        days.push({ key, date: d, visitors: byDay[key] || 0 });
+      }
+
+      const max = Math.max(...days.map((d) => d.visitors), 1);
+      const showEvery = days.length > 14 ? 3 : 1;
+
+      days.forEach((d, i) => {
+        const col = document.createElement('div');
+        col.className = 'bar-col';
+        const bar = document.createElement('div');
+        bar.className = 'bar' + (d.visitors === 0 ? ' zero' : '');
+        bar.style.height = Math.max(2, (d.visitors / max) * 85) + '%';
+        bar.title = d.date.toDateString() + ': ' + d.visitors + ' visitors';
+        if (d.visitors > 0 && days.length <= 14) {
+          const num = document.createElement('span');
+          num.textContent = d.visitors;
+          bar.appendChild(num);
+        }
+        const label = document.createElement('div');
+        label.className = 'bar-day';
+        label.textContent = i % showEvery === 0
+          ? d.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+          : '';
+        col.append(bar, label);
+        chart.appendChild(col);
+      });
+
+      const best = days.reduce((a, b) => (b.visitors > a.visitors ? b : a), days[0]);
+      document.getElementById('best-day').textContent = best && best.visitors ? best.visitors : '0';
+      document.getElementById('best-day-sub').textContent = best && best.visitors
+        ? 'visitors on ' + best.date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' })
+        : 'no visitors yet';
+    }
+
+    function showNotice(text) {
+      notice.textContent = text;
+      notice.classList.toggle('hidden', !text);
+    }
+
+    async function load() {
+      showNotice('');
+      document.getElementById('refresh').textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/stats?days=' + rangeSelect.value, {
+          headers: { 'x-admin-password': password },
+          cache: 'no-store',
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (res.status === 401) {
+          logout('Wrong password. Please try again.');
+          return false;
+        }
+        if (!res.ok) {
+          loginBox.classList.add('hidden');
+          dash.classList.remove('hidden');
+          showNotice((data.message || 'Something went wrong.') + (data.status ? ' (Vercel code ' + data.status + ')' : ''));
+          return true;
+        }
+
+        loginBox.classList.add('hidden');
+        dash.classList.remove('hidden');
+        document.getElementById('visitors').textContent = data.visitors;
+        document.getElementById('pageviews').textContent = data.pageviews;
+        renderChart(data);
+        renderList('referrers', data.referrers, referrerLabel);
+        renderList('countries', data.countries, countryLabel);
+        renderList('devices', data.devices, deviceLabel);
+        renderList('pages', data.pages, (p) => (p === '/' ? 'Home page' : p || 'Others'));
+        document.getElementById('foot').textContent =
+          'Updated ' + new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) +
+          ' · Data from Vercel Web Analytics (free plan keeps the last 30 days)';
+        return true;
+      } catch (err) {
+        showNotice('Could not reach the server. Check your internet connection and try again.');
+        return true;
+      } finally {
+        document.getElementById('refresh').textContent = '↻ Refresh';
+      }
+    }
+
+    function logout(message) {
+      password = '';
+      try { sessionStorage.removeItem('adminPass'); } catch (e) {}
+      dash.classList.add('hidden');
+      loginBox.classList.remove('hidden');
+      loginMsg.textContent = message || '';
+      document.getElementById('password').value = '';
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      password = document.getElementById('password').value;
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Checking...';
+      loginMsg.textContent = '';
+      const ok = await load();
+      if (ok) { try { sessionStorage.setItem('adminPass', password); } catch (e2) {} }
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Open dashboard';
+    });
+
+    rangeSelect.addEventListener('change', load);
+    document.getElementById('refresh').addEventListener('click', load);
+    document.getElementById('logout').addEventListener('click', () => logout(''));
+
+    // Stay logged in while this browser tab is open
+    if (password) load();
+  </script>
+</body>
+</html>
