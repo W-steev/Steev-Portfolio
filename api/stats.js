@@ -68,9 +68,12 @@ module.exports = async (req, res) => {
 
   // Free plan keeps one month of data, so allow 1–30 days
   const days = Math.min(Math.max(parseInt(req.query.days, 10) || 7, 1), 30);
-  const until = new Date();
-  const since = new Date(until.getTime() - (days - 1) * 24 * 60 * 60 * 1000);
-  const range = { since: isoDay(since), until: isoDay(until) };
+  // Exact times: from midnight (UTC) at the start of the period until right now.
+  // (A bare date like "2026-11-25" would mean midnight at the START of that day,
+  // which leaves out today's visitors.)
+  const now = new Date();
+  const startDay = new Date(now.getTime() - (days - 1) * 24 * 60 * 60 * 1000);
+  const range = { since: isoDay(startDay) + 'T00:00:00.000Z', until: now.toISOString() };
 
   try {
     const [totals, daily, pages, referrers, countries, devices] = await Promise.all([
@@ -98,8 +101,8 @@ module.exports = async (req, res) => {
 
     return res.status(200).json({
       days,
-      since: range.since,
-      until: range.until,
+      since: range.since.slice(0, 10),
+      until: range.until.slice(0, 10),
       visitors: total.visitors || 0,
       pageviews: total.pageviews || 0,
       totalsFromDays: total.fromDays,
